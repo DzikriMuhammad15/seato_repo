@@ -1106,3 +1106,6 @@ problem_and_solution -> berisi hasil kesimpulan pembahasan pengguna
 project_mockup -> berisi mockup source code dari seato dan gambaran sejauh ini dari aplikasi yang diinginkan
 uml_technical -> berisi diagram UML yang versi teknis
 
+
+
+
