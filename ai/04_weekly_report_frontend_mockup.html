@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Weekly Report Dashboard Seato Business</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+  :root{
+    --navy:#1B3461; --navy-dark:#0F172A; --teal:#0EA5A0; --teal-dark:#0D8F8B;
+    --gold:#FACC15; --muted:#64748B; --border:#E2E8F0; --border-soft:#F1F5F9;
+    --bg:#F8FAFC; --panel:#FFFFFF; --indigo:#4F46E5; --indigo-bg:#EEF2FF;
+    --good-bg:#CCFBF1; --good-text:#0F766E;
+    --warn-bg:#FEF9C3; --warn-text:#854D0E;
+    --bad-bg:#FEE2E2; --bad-text:#991B1B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--navy-dark); font-family:'Inter',sans-serif; display:flex;}
+
+  /* ---- sidebar mimic ---- */
+  .sidebar{width:220px; min-height:100vh; background:#FFFFFF; border-right:1px solid var(--border-soft);
+    padding:20px 14px; flex-shrink:0;}
+  .brand{display:flex; align-items:center; gap:10px; padding:4px 8px 22px;}
+  .brand .mark{width:32px;height:32px;background:var(--navy);border-radius:8px;color:#fff;
+    font-weight:800; font-size:16px; display:flex; align-items:center; justify-content:center;}
+  .brand .word{font-size:17px; font-weight:800; color:var(--navy-dark); letter-spacing:-0.4px;}
+  .brand .word b{color:var(--teal); font-weight:800;}
+  .navitem{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px;
+    font-size:13px; font-weight:600; color:var(--muted); margin-bottom:2px;}
+  .navitem.active{background:var(--border-soft); color:var(--teal); font-weight:700;}
+
+  /* ---- main ---- */
+  .main{flex:1; padding:28px 32px; max-width:900px;}
+  .pagetitle{font-size:26px; font-weight:800; color:var(--navy-dark); letter-spacing:-0.5px; margin:0 0 3px;}
+  .pagesub{font-size:12.5px; color:var(--muted); margin:0 0 20px;}
+
+  .card{background:var(--panel); border:1px solid var(--border-soft); border-radius:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.03); padding:22px; margin-bottom:18px;}
+
+  .ai-banner{background:linear-gradient(135deg,var(--indigo-bg),#FFFFFF); border:1px solid var(--indigo-bg);
+    border-radius:16px; padding:18px 22px; margin-bottom:18px; display:flex; align-items:center; gap:14px;}
+  .ai-banner .mark{width:38px;height:38px;border-radius:10px;background:var(--indigo);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:16px;flex-shrink:0;}
+  .ai-banner .t{font-size:13.5px; color:var(--navy-dark); line-height:1.5;}
+  .badge-ai{font-size:10.5px; font-weight:700; color:var(--indigo); background:#fff;
+    padding:3px 8px; border-radius:20px; margin-left:8px; border:1px solid var(--indigo-bg); vertical-align:middle;}
+
+  .section-title{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--muted); margin-bottom:14px;}
+
+  .weather-strip{display:flex; gap:8px; overflow-x:auto;}
+  .wday{flex:1; min-width:76px; text-align:center; background:var(--bg);
+    border:1px solid var(--border-soft); border-radius:12px; padding:12px 6px;}
+  .wday .d{font-size:10.5px; color:var(--muted); font-weight:600;}
+  .wday .icon{font-size:20px; margin:6px 0;}
+  .wday .t{font-size:13px; font-weight:700; color:var(--navy-dark);}
+
+  .grid2{display:grid; grid-template-columns:1.25fr 1fr; gap:18px;}
+  @media (max-width:720px){ .grid2{grid-template-columns:1fr;} }
+
+  .finding{display:flex; gap:10px; padding:11px 0; border-bottom:1px solid var(--border-soft);}
+  .finding:last-child{border-bottom:none;}
+  .chip-dot{font-size:10px; font-weight:700; padding:3px 8px; border-radius:8px; flex-shrink:0; height:fit-content;}
+  .chip-dot.bad{background:var(--bad-bg); color:var(--bad-text);}
+  .chip-dot.warn{background:var(--warn-bg); color:var(--warn-text);}
+  .chip-dot.good{background:var(--good-bg); color:var(--good-text);}
+  .finding b{font-size:13px; color:var(--navy-dark); font-weight:700;}
+  .finding p{font-size:12px; color:var(--muted); margin:4px 0 0; line-height:1.5;}
+
+  .limitation{font-size:11px; color:var(--muted); background:var(--bg);
+    border:1px dashed var(--border); border-radius:10px; padding:10px 12px; margin-top:12px; line-height:1.5;}
+
+  .chart-box svg{width:100%; height:auto;}
+  .chartnote{font-size:11px; color:var(--muted); margin-top:10px; line-height:1.5;}
+
+  .action{display:flex; justify-content:space-between; align-items:flex-start;
+    gap:10px; padding:12px 0; border-bottom:1px solid var(--border-soft); font-size:12.5px;}
+  .action:last-child{border-bottom:none;}
+  .action b{color:var(--navy-dark); font-size:13px;}
+  .action p{color:var(--muted); margin:4px 0 0; line-height:1.5;}
+  .tag-channel{font-size:10.5px; font-weight:700; background:var(--border-soft); color:var(--navy);
+    border-radius:20px; padding:4px 10px; white-space:nowrap; flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="brand">
+    <div class="mark">S</div>
+    <div class="word">Seato <b>Business</b></div>
+  </div>
+  <div class="navitem">Dashboard</div>
+  <div class="navitem">Reservations</div>
+  <div class="navitem">Zonasi Meja</div>
+  <div class="navitem">Promos</div>
+  <div class="navitem active">Weekly Report</div>
+</div>
+
+<div class="main">
+  <h1 class="pagetitle">Weekly Report — Kopi Senja</h1>
+  <p class="pagesub">Periode 29 Sep – 5 Okt 2026 · Dibuat otomatis oleh AI, Senin 06:00</p>
+
+  <div class="ai-banner">
+    <div class="mark">S</div>
+    <div class="t">
+      Minggu ini okupansi weekday afternoon turun, tapi reservasi weekend naik di atas rata-rata.
+      Fokus utama minggu depan: antisipasi 2 hari hujan yang diprediksi.
+      <span class="badge-ai">AI Powered</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Prediksi Cuaca Minggu Ini · Bandung</div>
+    <div class="weather-strip">
+      <div class="wday"><div class="d">Sen</div><div class="icon">☀️</div><div class="t">31°</div></div>
+      <div class="wday"><div class="d">Sel</div><div class="icon">⛅</div><div class="t">29°</div></div>
+      <div class="wday"><div class="d">Rab</div><div class="icon">🌧️</div><div class="t">26°</div></div>
+      <div class="wday"><div class="d">Kam</div><div class="icon">🌧️</div><div class="t">25°</div></div>
+      <div class="wday"><div class="d">Jum</div><div class="icon">⛅</div><div class="t">28°</div></div>
+      <div class="wday"><div class="d">Sab</div><div class="icon">☀️</div><div class="t">30°</div></div>
+      <div class="wday"><div class="d">Min</div><div class="icon">☀️</div><div class="t">31°</div></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="section-title">Interpretasi Mingguan</div>
+      <div class="finding">
+        <div class="chip-dot bad">TURUN</div>
+        <div>
+          <b>Okupansi weekday afternoon turun 18%</b>
+          <p>Terutama Rabu–Kamis 14:00–17:00, bertepatan dengan periode sepi historis.</p>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="chip-dot good">NAIK</div>
+        <div>
+          <b>Reservasi weekend naik 12% dibanding rata-rata 4 minggu</b>
+          <p>Kategori "Outdoor" paling banyak dicari pada Sabtu–Minggu.</p>
+        </div>
+      </div>
+      <div class="finding">
+        <div class="chip-dot warn">WASPADA</div>
+        <div>
+          <b>2 hari hujan diprediksi (Rabu, Kamis) minggu depan</b>
+          <p>Pola historis: hari hujan berkorelasi dengan penurunan walk-in ~10-15% pada merchant dengan area outdoor dominan.</p>
+        </div>
+      </div>
+      <div class="limitation">
+        Keterbatasan data: korelasi cuaca-reservasi di atas berbasis 6 minggu data historis — sampel masih kecil, dibaca sebagai indikasi awal, bukan kepastian.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Tren Reservasi (AI-generated chart)</div>
+      <div class="chart-box">
+        <svg viewBox="0 0 280 160" xmlns="http://www.w3.org/2000/svg">
+          <line x1="28" y1="10" x2="28" y2="130" stroke="#CBD5E1" stroke-width="1"/>
+          <line x1="28" y1="130" x2="270" y2="130" stroke="#CBD5E1" stroke-width="1"/>
+          <polyline fill="none" stroke="#2563EB" stroke-width="2.5"
+            points="28,80 62,70 96,100 130,108 164,60 198,45 232,30"/>
+          <g fill="#2563EB">
+            <circle cx="28" cy="80" r="3"/><circle cx="62" cy="70" r="3"/>
+            <circle cx="96" cy="100" r="3"/><circle cx="130" cy="108" r="3"/>
+            <circle cx="164" cy="60" r="3"/><circle cx="198" cy="45" r="3"/>
+            <circle cx="232" cy="30" r="3"/>
+          </g>
+          <text x="22" y="144" font-size="8" fill="#64748B">Sen</text>
+          <text x="56" y="144" font-size="8" fill="#64748B">Sel</text>
+          <text x="88" y="144" font-size="8" fill="#64748B">Rab</text>
+          <text x="122" y="144" font-size="8" fill="#64748B">Kam</text>
+          <text x="156" y="144" font-size="8" fill="#64748B">Jum</text>
+          <text x="192" y="144" font-size="8" fill="#64748B">Sab</text>
+          <text x="224" y="144" font-size="8" fill="#64748B">Min</text>
+        </svg>
+      </div>
+      <p class="chartnote">Dibuat dari kode matplotlib hasil generate AI (scratchpad), dirender ke gambar lalu ditampilkan di dashboard.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Rekomendasi Aksi Minggu Depan</div>
+    <div class="action">
+      <div>
+        <b>Siapkan promo indoor/delivery untuk Rabu–Kamis</b>
+        <p>Mengantisipasi hujan yang diprediksi, sekaligus menutup gap okupansi weekday afternoon.</p>
+      </div>
+      <span class="tag-channel">Promotion</span>
+    </div>
+    <div class="action">
+      <div>
+        <b>Pastikan staffing cukup untuk weekend</b>
+        <p>Tren reservasi weekend naik — risiko understaffed bila tidak disesuaikan.</p>
+      </div>
+      <span class="tag-channel">Operations</span>
+    </div>
+    <div class="action">
+      <div>
+        <b>Highlight kategori "Outdoor" di konten minggu ini</b>
+        <p>Kategori ini paling dicari pada hari cerah yang diprediksi (Sabtu–Minggu).</p>
+      </div>
+      <span class="tag-channel">Social Media</span>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
