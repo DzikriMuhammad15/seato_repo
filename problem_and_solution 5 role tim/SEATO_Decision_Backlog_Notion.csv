@@ -1,0 +1,25 @@
+No,Fase,Case,Referensi,PIC,Didukung,Urgensi,Catatan Urgensi,Dependency,Selesai
+1,Fase 1 — Jalan Sekarang,Riset dukungan hold/delayed-split Midtrans vs Xendit (sumber resmi),Problem4 §4,Bagus,,Tertinggi,Semua coding payment gateway menunggu ini,Tidak ada — titik awal rantai,No
+2,Fase 1 — Jalan Sekarang,"Hitung risiko finansial tiap opsi A/B/C (clawback, saldo jaminan kalau Opsi B)",Problem4 §4,Arif,,Tertinggi,Paralel dengan #1,Butuh hasil riset #1 dulu baru bisa dihitung presisi,No
+3,Fase 1 — Jalan Sekarang,Riset lapangan % target merchant Jakarta+Bandung yang ber-NIB/legalitas memadai,PROBLEM_YANG_BELUM_TERSELESAIKAN.md §2,Dandy,,Tinggi,"Menentukan ukuran TAM riil, dipakai Arif di model fundraising","Tidak ada, bisa jalan paralel dengan #1-2",No
+4,Fase 1 — Jalan Sekarang,"Hitung ulang market size presisi Jakarta+Bandung (Google Places API, bukan asumsi ""63.000"")",problem2 §G,Dandy,,Tinggi,Sama dependency-nya dengan #3 (sama-sama input TAM),Tidak ada,No
+5,Fase 1 — Jalan Sekarang,"Rekonsiliasi data pre-launch cost (Funding Rp159,7jt vs Cost Structure Rp152,7jt)",Finance §7,Arif,,Sedang,"Data hygiene, tidak blocking siapa pun tapi harus kelar sebelum angka dipakai pitching",Tidak ada,No
+6,Fase 1 — Jalan Sekarang,Cek double-count Growth Cost (Trial Subsidy) vs biaya masa gratis 2 bulan,Finance §7,Arif,,Sedang,Sama alasan dengan #5,Tidak ada,No
+7,Fase 2 — Setelah Fase 1 Kelar,Putuskan lokasi penahanan dana DP (A/B/C),Problem4 §4,Giffard,"Bagus, Arif",Tertinggi,"Begitu ini jatuh, Bagus langsung mulai build",Butuh #1 dan #2 selesai,No
+8,Fase 2 — Setelah Fase 1 Kelar,Putuskan strategi Merchant Lite vs Full-DP-only,PROBLEM_YANG_BELUM_TERSELESAIKAN.md §2,Giffard,"Dandy, Arif, Bagus",Tinggi,,Butuh #3 selesai,No
+9,Fase 2 — Setelah Fase 1 Kelar,Eksekusi implementasi seat-lock + DP + integrasi gateway sungguhan,"Problem1, Problem4",Bagus,Dzikri,Tertinggi,Satu-satunya blocker value proposition inti Seato,Butuh #7 diputuskan,No
+10,Fase 2 — Setelah Fase 1 Kelar,Putuskan skema fundraise A2 vs B,Finance §7 item 3,Arif,Bagus,Tinggi,,Idealnya setelah #9 ada estimasi timeline lebih solid,No
+11,Fase 3 — Pra-Launch,Desain mitigasi insentif staff tidak scan QR (DP sengaja dibiarkan hangus),Problem4 §3 poin 3,Bagus,Dandy,Sedang-Tinggi,Harus kelar sebelum fitur DP live,"Terkait #9, tapi bisa didesain paralel",No
+12,Fase 3 — Pra-Launch,"Kunci definisi final ""repeat customer""",problem2 checklist F,Dandy,Arif,Sedang,Sebelum dashboard merchant tampilkan metrik ini,Tidak ada,No
+13,Fase 3 — Pra-Launch,Tentukan harga subscription Starter/Professional/Enterprise,"Business def §35, Finance §7",Arif,Giffard,Sedang,"Bisa menyusul setelah masa gratis 2 bulan pertama, tidak perlu kelar sebelum launch",Tidak ada,No
+14,Fase 3 — Pra-Launch,Susun rencana moderasi konten Stream (trust & safety),problem2 §G,Dandy,Bagus,Tinggi,"Disyaratkan eksplisit sebelum launch karena gamifikasi ""keep full"" sudah diputuskan","Tidak ada, tapi deadline mepet ke tanggal launch",No
+15,Fase 3 — Pra-Launch,Rancang mitigasi XP-farming lanjutan (diminishing returns/cooldown/cap harian/dll),PROBLEM_YANG_BELUM_TERSELESAIKAN.md §1,Dzikri,,Sedang,,Tidak ada,No
+16,Fase 4 — Community x Merchant Match,Selesaikan kontradiksi Jalur #02 (subscription tier gate vs pool gratis),problem2-community §6,Arif,Giffard,Rendah,Fitur ini sendiri belum masuk scope V1 inti,Tidak ada,No
+17,Fase 4 — Community x Merchant Match,"Tentukan urutan rollout 4 jalur monetisasi (Sponsored Placement, Subscription Tier Gate, Data Premium, Reservation Commission)",problem2-community §6,Arif,Giffard,Rendah,,Idealnya setelah #13 (pricing subscription dasar sudah ada),No
+18,Fase 4 — Community x Merchant Match,Tentukan pemilik operasional kurasi manual komunitas & verifikasi merchant,problem2-community §6,Dandy,,Rendah,"Default, perlu konfirmasi",Tidak ada,No
+19,Fase 4 — Community x Merchant Match,Putuskan mekanisme matching: manual ops vs otomatis,problem2-community §6,Bagus,Dandy,Rendah,,Butuh #18,No
+20,Fase 5 — AI Lanjutan,Pilih sumber data cuaca: BMKG vs OpenWeatherMap,ai/02 §3,Dzikri,,Rendah,,Tidak ada,No
+21,Fase 5 — AI Lanjutan,Pilih channel pengiriman weekly report (Email/Telegram/WA Business API),ai/02 §3,Dzikri,Dandy,Rendah,Dandy soal biaya operasional kalau WA Business API,Tidak ada,No
+22,Fase 5 — AI Lanjutan,Putuskan jadwal laporan: seragam vs custom per merchant,ai/02 §3,Dzikri,Dandy,Rendah,,Tidak ada,No
+23,Fase 5 — AI Lanjutan,"Kunci threshold ""signifikan"" untuk anomali traffic (%)",ai/02 §2,Dzikri,,Rendah-Sedang,Risiko reputasi kalau salah walau fiturnya sendiri belum urgent,Tidak ada,No
+24,Fase 5 — AI Lanjutan,Tentukan rate limit & isolasi keamanan sandbox untuk chatbot code-exec,ai/01 §5,Bagus,Arif,Rendah,Arif soal cost-per-request,Tidak ada,No
