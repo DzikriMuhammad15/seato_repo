@@ -1,0 +1,19 @@
+{
+  "_catatan": "Ganti semua GANTI_... dengan Place ID asli (cari lewat Place ID Finder Google). Region tingkat kota administrasi lebih aman daripada kelurahan (kelurahan mungkin ditolak sebagai region).",
+  "regions": [
+    {"nama": "Jakarta Selatan", "place_id": "GANTI_PLACE_ID_JAKARTA_SELATAN"},
+    {"nama": "Jakarta Timur", "place_id": "GANTI_PLACE_ID_JAKARTA_TIMUR"},
+    {"nama": "Jakarta Barat", "place_id": "GANTI_PLACE_ID_JAKARTA_BARAT"},
+    {"nama": "Jakarta Utara", "place_id": "GANTI_PLACE_ID_JAKARTA_UTARA"},
+    {"nama": "Jakarta Pusat", "place_id": "GANTI_PLACE_ID_JAKARTA_PUSAT"},
+    {"nama": "Kota Bandung", "place_id": "GANTI_PLACE_ID_KOTA_BANDUNG"}
+  ],
+  "tipe_sets": {
+    "V1_coffee_shop": ["coffee_shop"],
+    "V1_cafe": ["cafe"],
+    "V1_gabungan": ["coffee_shop", "cafe"],
+    "FNB_restoran": ["restaurant"]
+  },
+  "operating_status": ["OPERATING_STATUS_OPERATIONAL"],
+  "rating_min_list": [null, 4.0]
+}
