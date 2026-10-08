@@ -48,8 +48,9 @@ Ilustrasi sensitivitas (BUKAN estimasi, hanya menunjukkan efek filter terhadap b
 
 Metode pengukuran yang disepakati (hybrid, tanpa enumerasi penuh):
 1. **Places Aggregate API** (Google): hitung `coffee_shop`, `cafe` (dan `restaurant` untuk tampilan F&B umum) dengan filter OPERATIONAL per kota/kecamatan. Indonesia tercakup. Harga US$10 per 1.000 request, gratis 5.000 pertama per bulan ([pricing](https://developers.google.com/maps/billing-and-pricing/pricing), [coverage](https://developers.google.com/maps/documentation/places-aggregate/coverage)). Hasil ini sekaligus menjawab apakah angka PoiData jauh berbeda.
-2. **Sampel acak ±200 tempat per kota** (daftar ID dari polygon kecil, karena ID hanya dikembalikan jika hasil ≤100) untuk menentukan persentase yang berkursi dan aktif digital, dengan rentang kepercayaan. Field Place Details yang menunjukkan dine-in/reservable **belum diverifikasi** di dokumentasi.
-3. **Tidak** menarik dan menyimpan daftar 38 ribu listing: Text Search dibatasi 60 hasil per query, estimasi biaya enumerasi penuh Rp3-12 jt (estimasi, bukan angka Google), dan [ToS Google](https://cloud.google.com/maps-platform/terms/maps-service-terms) membatasi caching/ekspor (hanya `place_id`; lat/lng maksimal 30 hari). Simpan hanya angka agregat, JSON parameter request, dan tanggal query. Status angka agregat di deck perlu dikonfirmasi ke konsultan hukum.
+2. **Sampel acak ±200 tempat per kota** (daftar ID dari polygon kecil, karena ID hanya dikembalikan jika hasil ≤100) untuk menentukan persentase yang berkursi dan aktif digital, dengan rentang kepercayaan. Field `dineIn`, `reservable`, `outdoorSeating` tersedia di Place Details tier **Enterprise + Atmosphere** (diverifikasi di [dokumentasi Place Details](https://developers.google.com/maps/documentation/places/web-service/place-details), 2026-10-08); `rating`, `regularOpeningHours`, `nationalPhoneNumber`, `websiteUri` di tier Enterprise; `businessStatus` di Pro. Kuota gratis Enterprise + Atmosphere 1.000 per bulan, cukup untuk sampel.
+3. **Tidak** menarik dan menyimpan daftar 38 ribu listing: Text Search dibatasi 60 hasil per query, estimasi biaya enumerasi penuh Rp3-12 jt (estimasi, bukan angka Google), dan [ToS Google](https://cloud.google.com/maps-platform/terms/maps-service-terms) membatasi caching/ekspor (hanya `place_id`; lat/lng maksimal 30 hari). Simpan hanya angka agregat, JSON parameter request, dan tanggal query.
+   - **Koreksi (2026-10-08, ditemukan setelah draft pertama):** klausul 13.2 di bagian Places Aggregate API pada [Service Specific Terms](https://cloud.google.com/maps-platform/terms/maps-service-terms) hanya mengizinkan cache POI Count selama 30 hari kalender, semata untuk menghitung "Customer Value", lalu wajib dihapus. Artinya menyimpan hitungan Google secara permanen di deck/dokumen berpotensi melanggar. Pernyataan "simpan hanya angka agregat" di atas **belum tentu aman**. Wajib dikonfirmasi ke konsultan hukum **sebelum angka dipakai di deck**. Tidak memblokir sprint (menjalankan query sesuai ToS tetap boleh).
 
 Prasyarat: **belum ada akun Google Cloud + billing**. Arif (CFO) memegang kartu/billing, Dandy menjalankan query. Wajib pasang budget alert dan batas kuota harian.
 
@@ -85,6 +86,8 @@ Prasyarat: **belum ada akun Google Cloud + billing**. Arif (CFO) memegang kartu/
 
 ## 6. Rencana eksekusi: satu sprint lapangan (menggabungkan #3, #4, kalibrasi SOM)
 
+> **Update 2026-10-08 23:50:** karena belum ada billing Google Cloud, langkah 1-2 di bawah diganti sampling klaster manual dan durasi direvisi ke **±6-8 minggu**. Rincian, keputusan Arif, template, naskah, dan script ada di `20261008_2350_clearance_arif_dan_rencana_fase0.md`. Keputusan Arif: SOM dipegang Dandy dengan aturan min(kapasitas, porsi SAM), FOS ≤ SOM; retensi base 95%/bear 90%/stress 85%.
+
 Mengapa digabung: #3 (persentase merchant ber-NIB/legalitas memadai, menentukan Merchant Lite vs Full-DP-only) dan #4 (SAM presisi) sama-sama membutuhkan **sampel acak merchant Jakarta+Bandung**. Satu sampel melayani tiga kebutuhan. Backlog menulis #3 dan #4 "tidak ada dependency", padahal persentase NIB adalah salah satu penyaring kelayakan SAM.
 
 Langkah (±4-6 minggu pada kapasitas ≤5 percakapan/minggu):
@@ -105,8 +108,8 @@ Langkah (±4-6 minggu pada kapasitas ≤5 percakapan/minggu):
 1. Angka SAM final (hasil Aggregate + sampel) dan persentase layak.
 2. Angka SOM final dan keputusan Arif: SOM mengikuti High atau diturunkan dari kapasitas; apakah "Merchant" di FOS menghitung merchant masa bundel.
 3. Kapasitas onboarding: tuas apa yang benar-benar menaikkan dari ≤5 ke ±7-14 meeting/minggu.
-4. Field Place Details untuk dine-in/reservable belum diverifikasi.
-5. Status hukum angka agregat Google di deck (konsultan hukum).
+4. ~~Field Place Details untuk dine-in/reservable belum diverifikasi.~~ **Selesai 2026-10-08** (lihat §3 langkah 2). Yang masih belum terverifikasi: apakah `coffee_shop`/`cafe` dan region tingkat kelurahan diterima Aggregate (baru ketahuan saat run pertama).
+5. Status hukum angka agregat Google di deck, termasuk klausul 13.2 (cache POI Count maksimal 30 hari). Konsultan hukum, **blokir sebelum deck**, bukan sebelum sprint.
 6. Cakupan bundel terhadap Promotion, kebijakan refund, penanganan akun ganda, akuntansi pendapatan diterima di muka.
 7. Pengisian ulang TAM dengan ARPM final setelah harga subscription (#13) diputuskan.
 8. LOI tertulis 10 merchant sebelum kick-off launch.
