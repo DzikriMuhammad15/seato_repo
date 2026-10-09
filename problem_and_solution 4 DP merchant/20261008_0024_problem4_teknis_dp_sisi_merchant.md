@@ -1,7 +1,7 @@
 # Problem 4 — Teknis DP (Deposit Reservasi) dari Sisi Merchant
 
 **Timestamp:** 2026-10-08 00:24
-**Status:** Kesimpulan disetujui pengguna. **Satu keputusan masih terbuka** (lokasi penahanan dana, lihat §4).
+**Status:** Kesimpulan disetujui pengguna. **Satu keputusan masih terbuka** (lokasi penahanan dana, lihat §4). **Update 2026-10-09:** §2.2 dan §2.3 direvisi — approval manual merchant dikembalikan sebelum pembayaran DP (detail di `problem1.md` §3.2 dan §4).
 **Turunan dari:** `problem_and_solution 1 DP/20260930_0032_problem1_reservasi_seat_lock_dp.md`
 
 ---
@@ -25,22 +25,29 @@ Pertanyaan: "gimana teknis DP untuk merchant". Pembahasan dimulai dengan membaca
 - Merchant yang belum lolos KYB masuk ke flow reservasi tanpa DP (opsi "Segmented" di `PROBLEM_YANG_BELUM_TERSELESAIKAN.md`, belum diputuskan final).
 
 ### 2.2 State machine per reservasi
+
+**Update 2026-10-09:** state machine di bawah direvisi — approval manual merchant **dikembalikan** sebagai gerbang sebelum pembayaran (keputusan "DP lunas = auto-confirm" dibalik, lihat `problem1.md` §4 untuk alasan lengkap).
+
 ```
-LOCKED (5 mnt) → DP_PAID → REDEEMED → SETTLED
-      ↓              ↓
-   EXPIRED     CANCELLED_USER / NO_SHOW → FORFEITED → SETTLED
-                     CANCELLED_MERCHANT → REFUNDED
+REQUESTED (Timer Approval 10 mnt) → MERCHANT_APPROVED (Timer A 5 mnt) → DP_PAID → REDEEMED → SETTLED
+      ↓                                    ↓                                ↓
+APPROVAL_EXPIRED                    MERCHANT_REJECTED                   EXPIRED
+(reliability −, §3.5 problem1)      (netral, wajib alasan)      CANCELLED_USER / NO_SHOW → FORFEITED → SETTLED
+                                                                  CANCELLED_MERCHANT → REFUNDED
 ```
-- Field baru di `Reservation`: `dpAmount`, `dpStatus`, `lockedUntil`, `paidAt`, `redeemedAt`, `gatewayOrderId`.
+- Field baru di `Reservation`: `dpAmount`, `dpStatus`, `lockedUntil`, `approvalExpiresAt`, `paidAt`, `redeemedAt`, `gatewayOrderId`.
+- Field baru untuk approval: status reservasi menambah nilai `REQUESTED`, `MERCHANT_APPROVED`, `MERCHANT_REJECTED`, `APPROVAL_EXPIRED` (reuse pola `status` string yang sudah ada, bukan tabel terpisah).
 - `gatewayOrderId` unik, untuk idempotensi webhook (webhook ganda tidak boleh mencatat DP dua kali).
 - Model baru `DpLedger` (append-only: reservasi, jenis event, nominal, waktu) sebagai dasar rekonsiliasi. Jangan hanya mengandalkan `dpStatus`.
 - Semua transisi pembatalan wajib atomic (ubah status, `dpStatus`, dan `seatoOccupied` dalam satu operasi), menggantikan pola baca-lalu-tulis di cron dan route yang ada.
 
 ### 2.3 Tampilan Admin App merchant
-- Reservasi masuk otomatis dengan badge "DP lunas". Tidak ada tombol approve untuk urusan kapasitas.
+- **Update 2026-10-09:** reservasi masuk dengan **tombol Approve/Reject**, countdown Timer Approval (10 menit) tampil ke merchant. Badge "DP lunas" baru muncul **setelah** merchant approve DAN user menyelesaikan pembayaran — bukan menggantikan approval.
+- Reject wajib isi alasan (reuse pola `cancelReason`/`cancelledBy` yang sudah ada di skema).
 - Di titik scan QR muncul angka "sisa yang di-charge", dihitung server.
 - Tombol "Undo no-show" (alasan wajib, berlaku 30 menit).
 - Halaman saldo: DP menunggu settle, sudah cair, hangus, refund.
+- Halaman reliability merchant menambah metric baru: jumlah `APPROVAL_EXPIRED` (telat/tidak respon approval) per periode, terpisah dari `MERCHANT_REJECTED` (reject aktif, tidak kena penalti).
 
 ## 3. Celah yang Ditemukan
 

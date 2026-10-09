@@ -39,14 +39,17 @@ Cek `count` hasil query — kalau 0, berarti kalah rebutan slot, tampilkan "meja
 
 Pengecekan hanya berlaku terhadap `seatoAllocated` (kuota Seato), tidak mengganggu `walkInOccupied` yang dikelola staff secara terpisah — skema yang ada sekarang sudah benar untuk ini.
 
-### 3.2 Dua Timer Independen
+### 3.2 Tiga Timer Independen
+
+**Update 2026-10-09:** keputusan awal (approval merchant dihapus, DP lunas = auto-confirm) **dibalik** setelah dipertimbangkan ulang — merchant tetap harus approve/reject manual sebelum user diarahkan bayar DP. Lihat §4 untuk penjelasan lengkap kenapa dibalik dan apa konsekuensinya.
 
 | Timer | Durasi | Fungsi | Konsekuensi kalau lewat |
 |---|---|---|---|
-| **Timer A** | 5 menit | Window dari meja dikunci sampai DP harus lunas dibayar (QRIS via Midtrans/Xendit) | Lock otomatis lepas, **tidak ada** konsekuensi finansial (DP belum pernah masuk) |
+| **Timer Approval** (baru) | 10 menit | Window dari reservasi masuk (`REQUESTED`) sampai merchant approve/reject | Timeout dianggap `APPROVAL_EXPIRED` — slot dilepas, **tercatat sebagai nilai buruk ke reliability score merchant** (lihat §3.5). User tidak dirugikan secara uang karena belum pernah diminta bayar. |
+| **Timer A** | 5 menit | Window dari merchant approve sampai DP harus lunas dibayar (QRIS via Midtrans/Xendit) | Lock otomatis lepas, **tidak ada** konsekuensi finansial (DP belum pernah masuk) |
 | **Timer B** | 15 menit | Toleransi dari jam reservasi sampai user scan QR di resto | Dianggap no-show, **DP hangus** |
 
-Deteksi timeout memakai pola ganda (meniru pola yang sudah ada di kode untuk no-show): cron job berjalan tiap ~30 detik (disesuaikan dengan window 5 menit yang ketat) + passive self-heal check di endpoint availability itu sendiri, supaya slot basi langsung dianggap kosong begitu dicek ulang meski cron belum sempat jalan.
+Deteksi timeout memakai pola ganda (meniru pola yang sudah ada di kode untuk no-show): cron job berjalan tiap ~30 detik (disesuaikan dengan window 5 dan 10 menit yang ketat) + passive self-heal check di endpoint availability itu sendiri, supaya slot basi langsung dianggap kosong begitu dicek ulang meski cron belum sempat jalan.
 
 Catatan implementasi: butuh sedikit toleransi (30–60 detik) di batas Timer A untuk mengakomodasi delay webhook konfirmasi dari Midtrans/Xendit, supaya pembayaran yang sukses di detik-detik akhir tidak keburu dianggap expired.
 
@@ -75,6 +78,7 @@ Flat per reservasi (bukan formula persentase per-orang yang rumit), berbeda per 
 
 - DP **di-refund penuh secara otomatis**, dipicu dari status `Ditolak Restoran` / `cancelledBy: 'admin'` (field yang sudah ada di skema, tinggal disambungkan ke refund API).
 - Setiap pembatalan oleh merchant setelah DP lunas **tercatat sebagai metric reliability merchant**, berpotensi memengaruhi exposure mereka di Discovery/Top Charts — insentif non-finansial supaya merchant tidak asal membatalkan reservasi yang sudah terkonfirmasi.
+- **Update 2026-10-09:** metric reliability yang sama juga mencakup `APPROVAL_EXPIRED` (merchant tidak merespon Timer Approval 10 menit, lihat §3.2) — ini beda dengan reject eksplisit (`Ditolak Restoran`, wajib isi alasan) yang **tidak** kena penalti, karena reject eksplisit dengan alasan valid dianggap keputusan bisnis yang sah, bukan kelalaian.
 
 ### 3.6 Dispute Resolution (model hybrid)
 
@@ -95,11 +99,13 @@ Prinsip utama: **uang tidak pernah bergantung pada apa yang staff input di POS m
 
 ## 4. Perubahan Arsitektur yang Berimplikasi
 
-- Tahap **"Menunggu Konfirmasi → admin approve manual"** pada alur reservasi yang ada sekarang **digantikan** oleh "Lock → DP lunas" sebagai gerbang konfirmasi otomatis. Admin tidak lagi approve reservasi satu-satu untuk urusan kapasitas — DP yang lunas otomatis jadi tanda konfirmasi.
+- **Update 2026-10-09 — keputusan dibalik:** rencana awal ("Menunggu Konfirmasi → admin approve manual" digantikan "Lock → DP lunas" sebagai gerbang konfirmasi otomatis) **tidak jadi dipakai**. Setelah dipertimbangkan ulang, approval manual merchant **dipertahankan** — alasannya kapasitas memang bisa dicek otomatis (atomic lock sudah cukup untuk itu), tapi merchant tetap butuh ruang untuk menolak reservasi karena alasan non-kapasitas (mis. red flag user, constraint operasional dadakan) sebelum user diminta mengeluarkan uang. Konsekuensinya, masalah lama "tidak ada SLA untuk status Menunggu Konfirmasi" (§2 poin 2) **harus** diselesaikan dengan cara lain: Timer Approval 10 menit (§3.2), bukan dengan menghapus approval-nya.
+- Urutan baru: `REQUESTED` (slot provisional terkunci, Timer Approval 10 menit jalan) → merchant approve → `MERCHANT_APPROVED` (Timer A 5 menit jalan, user bayar DP) → `DP_PAID` → `REDEEMED` → `SETTLED`. Cabang: merchant reject eksplisit → `MERCHANT_REJECTED` (netral); timeout 10 menit tanpa respon → `APPROVAL_EXPIRED` (kena penalti reliability, lihat §3.5); timeout Timer A → `EXPIRED` (netral, user belum bayar).
 - Field skema baru yang dibutuhkan:
   - `dpStatus` (PAID / FORFEITED / REFUNDED) di model `Reservation`.
   - `dpCategory` atau nominal DP di level `Restaurant` (hasil pilihan kategori saat onboarding).
-- Field yang **sudah ada dan bisa langsung dipakai ulang**: `cancelledBy` ('user' / 'admin' / 'system') sudah cukup untuk membedakan skenario pembatalan tanpa perlu skema baru.
+  - `approvalExpiresAt` (timestamp batas Timer Approval) dan `approvalStatus` (atau reuse `status` dengan nilai baru: `REQUESTED` / `MERCHANT_APPROVED` / `MERCHANT_REJECTED` / `APPROVAL_EXPIRED`).
+- Field yang **sudah ada dan bisa langsung dipakai ulang**: `cancelledBy` ('user' / 'admin' / 'system') sudah cukup untuk membedakan skenario pembatalan tanpa perlu skema baru. Status `Menunggu Konfirmasi` yang sudah ada di kode mockup sekarang (`src/app/api/reservations/[id]/route.js`) sebenarnya **sudah selaras** dengan model ini — cuma perlu ditambah Timer Approval di atasnya, bukan dihapus.
 
 ## 5. Yang Masih Terbuka / Dicatat untuk Fase Berikutnya
 
