@@ -55,7 +55,9 @@ Catatan implementasi: butuh sedikit toleransi (30–60 detik) di batas Timer A u
 
 ### 3.3 Kebijakan DP
 
-- DP diproses via QRIS, lewat Midtrans/Xendit dengan skema split settlement — dana mengalir **User → Midtrans/Xendit → rekening bank resto**, tidak pernah dikuasai langsung oleh entitas Seato (menghindari kebutuhan lisensi penyelenggara sistem pembayaran).
+- **Update 2026-10-09 — koreksi mekanisme, keputusan Opsi B final:** kalimat sebelumnya di sini menyebut "skema split settlement" — ini **tidak akurat**. Riset gateway (`bagus_result/20261009_riset_midtrans_xendit_hold_split_dp.md`) mengonfirmasi split settlement untuk QRIS tidak tersedia di Midtrans dan tidak terkonfirmasi di Xendit. Mekanisme yang benar: DP diproses via **QRIS charge biasa** (bukan split), dan dana mengalir **User → Midtrans/Xendit → rekening bank resto langsung saat DP lunas** (Opsi B, lihat `problem4.md` §4) — tidak pernah dikuasai entitas Seato karena memang tidak ada jeda penahanan sama sekali, bukan karena fitur gateway khusus.
+- Karena dana sudah ada di rekening merchant sejak DP lunas (bukan saat `REDEEMED`), kasus merchant membatalkan (§3.5) butuh klausul clawback + saldo jaminan kontraktual — bukan sekadar refund API — detail mitigasinya ada di `problem4.md` §4.1.
+- Nominal yang ditampilkan ke merchant (tabel §3.4) adalah nominal **bersih yang diterima merchant** — biaya MDR QRIS (0,7%, aturan BI) dan fee payout digeser ke customer lewat gross-up saat pembayaran, bukan dipotong dari merchant maupun ditombok Seato (detail formula di riset Bagus §5).
 - **DP hangus penuh ke merchant** baik user membatalkan manual sebelum jadwal maupun no-show diam-diam sampai lewat Timer B. Bedanya hanya kapan meja dilepas kembali jadi available: **langsung** (kalau user cancel manual — merchant dapat notice lebih awal) vs **otomatis di T+15 menit** (kalau user diam saja).
 - **Justifikasi nominal:** kerugian resto dari no-show pada dasarnya adalah opportunity cost dari window 15 menit table-time (karena meja kembali available untuk walk-in/reservasi lain setelahnya), bukan nilai tagihan penuh — sehingga DP yang dipatok tidak perlu setara nilai pesanan penuh.
 
@@ -91,7 +93,8 @@ Flat per reservasi (bukan formula persentase per-orang yang rumit), berbeda per 
 
 Prinsip utama: **uang tidak pernah bergantung pada apa yang staff input di POS mereka sendiri.**
 
-- Pencairan DP ke rekening resto dipicu otomatis begitu status jadi `REDEEMED` (QR di-scan), dihitung dari catatan Seato sendiri — bukan dari input staff.
+- **Update 2026-10-09:** dengan Opsi B, DP **sudah ada di rekening resto sejak lunas** — bukan "dicairkan saat REDEEMED" seperti draf sebelumnya (kalimat itu sisa asumsi skema A yang sudah tidak dipakai). Yang terjadi di titik `REDEEMED` cuma status reservasi berubah dan kuota Seato dilepas — bukan event transfer dana.
+- Angka "sisa yang harus di-charge ke customer" tetap dihitung dari catatan Seato sendiri (DP yang sudah lunas), bukan dari input staff — supaya kasir cuma tinggal charge angka itu apa adanya.
 - Admin App Seato (di titik scan QR) langsung menampilkan angka final "sisa yang harus dicharge ke customer" — staff tinggal charge angka itu apa adanya, tidak perlu menghitung diskon manual.
 - E-tiket customer sudah menampilkan angka sisa tagihan sejak sebelum datang, sehingga customer sendiri jadi lapisan pengecekan tambahan kalau di-charge beda di kasir.
 - Apa yang staff input ke POS mereka sendiri murni untuk kebutuhan pembukuan internal resto (supaya struk/laporan pajak mereka masuk akal) — bukan sumber kebenaran untuk settlement Seato.
@@ -109,6 +112,7 @@ Prinsip utama: **uang tidak pernah bergantung pada apa yang staff input di POS m
 
 ## 5. Yang Masih Terbuka / Dicatat untuk Fase Berikutnya
 
+- **Update 2026-10-09:** nominal saldo jaminan (security deposit) merchant dan draft klausul clawback kontrak — keputusan lokasi dana DP sudah final (Opsi B, `problem4.md` §4), tapi mekanisme mitigasinya masih perlu diisi Finance/legal. Lihat `problem4.md` §4.1 dan §5.
 - Penyesuaian DP berdasarkan peak vs off-peak hours (nyambung ke konsep Demand Heatmap di business definition) — dicatat sebagai penyempurnaan Fase 2, bukan kebutuhan V1.
 - Fitur "Bagi ke Teman" (split payment grup) — opsional Fase 2, bukan solusi utama.
 - Kalibrasi ulang nominal DP begitu ada data no-show/cancellation riil dari transaksi platform.
