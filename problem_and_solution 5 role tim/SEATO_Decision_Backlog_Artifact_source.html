@@ -1,0 +1,908 @@
+<title>SEATO Decision Backlog</title>
+<style>
+  :root {
+    --bg: #F4F6F5;
+    --surface: #FFFFFF;
+    --surface-2: #EAEFED;
+    --surface-3: #DFE6E4;
+    --border: #D7DEDC;
+    --text: #15221F;
+    --text-muted: #52635F;
+    --text-faint: #7E8C88;
+    --brand: #0C6B64;
+    --brand-tint: #E3F0EE;
+
+    --pic-giffard: #0C6B64;
+    --pic-arif: #8C6A1F;
+    --pic-bagus: #35529E;
+    --pic-dzikri: #7A4696;
+    --pic-dandy: #AE3A58;
+
+    --u-4: #B3261E; /* tertinggi */
+    --u-3: #A15C0A; /* tinggi */
+    --u-2: #2E6E99; /* sedang */
+    --u-1: #5B6460; /* rendah */
+
+    --u-4-bg: #FBEAE8;
+    --u-3-bg: #F7EEDF;
+    --u-2-bg: #E7F0F6;
+    --u-1-bg: #EBEEED;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1715;
+      --surface: #152220;
+      --surface-2: #1C2B28;
+      --surface-3: #25342F;
+      --border: #2B3836;
+      --text: #E7F1EE;
+      --text-muted: #9FB3AE;
+      --text-faint: #72857F;
+      --brand: #46C2B6;
+      --brand-tint: #11302C;
+
+      --pic-giffard: #46C2B6;
+      --pic-arif: #CDB15A;
+      --pic-bagus: #8CA3D9;
+      --pic-dzikri: #BC92CF;
+      --pic-dandy: #E08AA0;
+
+      --u-4: #E2867E;
+      --u-3: #E0A94C;
+      --u-2: #7FBAE8;
+      --u-1: #93A39D;
+
+      --u-4-bg: #3A1F1D;
+      --u-3-bg: #362C18;
+      --u-2-bg: #17293489;
+      --u-1-bg: #222E2B;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0E1715;
+    --surface: #152220;
+    --surface-2: #1C2B28;
+    --surface-3: #25342F;
+    --border: #2B3836;
+    --text: #E7F1EE;
+    --text-muted: #9FB3AE;
+    --text-faint: #72857F;
+    --brand: #46C2B6;
+    --brand-tint: #11302C;
+
+    --pic-giffard: #46C2B6;
+    --pic-arif: #CDB15A;
+    --pic-bagus: #8CA3D9;
+    --pic-dzikri: #BC92CF;
+    --pic-dandy: #E08AA0;
+
+    --u-4: #E2867E;
+    --u-3: #E0A94C;
+    --u-2: #7FBAE8;
+    --u-1: #93A39D;
+
+    --u-4-bg: #3A1F1D;
+    --u-3-bg: #362C18;
+    --u-2-bg: #172934;
+    --u-1-bg: #222E2B;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Source Sans 3", system-ui, sans-serif;
+    margin: 0;
+    padding-inline: 16px;
+    padding-block: 24px 64px;
+  }
+
+  h1, h2, h3, .num {
+    font-family: "Archivo", system-ui, sans-serif;
+  }
+
+  .mono {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+  }
+
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  /* ---------- header ---------- */
+
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 700;
+    margin: 4px 0 6px;
+    text-wrap: balance;
+  }
+
+  .sub {
+    color: var(--text-muted);
+    font-size: 15px;
+    max-width: 60ch;
+    margin: 0 0 20px;
+  }
+
+  .overall-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .overall-num {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1;
+    min-width: 74px;
+  }
+
+  .overall-bar-col {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .overall-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .bar-track {
+    height: 8px;
+    background: var(--surface-3);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--brand);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  .sync-note {
+    font-size: 12px;
+    color: var(--text-faint);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--text-faint);
+    flex: none;
+  }
+  .dot.live { background: #3FA66B; }
+
+  /* ---------- filter chips ---------- */
+
+  .filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .chip .dot { width: 8px; height: 8px; }
+
+  .chip[aria-pressed="true"] {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: currentColor;
+  }
+
+  .chip .count {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  /* ---------- phases ---------- */
+
+  .phase {
+    margin-bottom: 30px;
+  }
+
+  .phase-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .phase-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .phase-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 2px 0 0;
+  }
+
+  .phase-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-faint);
+    font-family: "IBM Plex Mono", monospace;
+    min-width: 120px;
+  }
+
+  .phase-progress .bar-track { width: 70px; }
+
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .task {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .task.done {
+    background: var(--surface-2);
+  }
+
+  .task input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: var(--brand);
+    cursor: pointer;
+    flex: none;
+  }
+
+  .task input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .task-body { flex: 1; min-width: 0; }
+
+  .task-num {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    color: var(--text-faint);
+  }
+
+  .task-case {
+    font-weight: 600;
+    font-size: 14.5px;
+    margin: 2px 0 6px;
+  }
+
+  .task.done .task-case {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+
+  .task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  .ref {
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--text-faint);
+    background: var(--surface-2);
+    padding: 2px 7px;
+    border-radius: 6px;
+  }
+
+  .pic-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 700;
+    padding: 2px 8px 2px 6px;
+    border-radius: 999px;
+  }
+
+  .pic-chip .dot { width: 7px; height: 7px; }
+
+  .supported {
+    color: var(--text-faint);
+  }
+
+  .urgency-pill {
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 999px;
+    letter-spacing: 0.01em;
+  }
+
+  .dependency {
+    width: 100%;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .dependency b { color: var(--text); }
+
+  .done-note {
+    width: 100%;
+    font-size: 11.5px;
+    color: var(--text-faint);
+    margin-top: 2px;
+  }
+
+  .answer-wrap {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .answer-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  textarea.answer-input {
+    width: 100%;
+    min-height: 50px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-family: "Source Sans 3", system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    background: var(--bg);
+    color: var(--text);
+    resize: vertical;
+  }
+
+  textarea.answer-input:focus {
+    outline: 2px solid var(--brand);
+    outline-offset: 1px;
+  }
+
+  textarea.answer-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .answer-note {
+    font-size: 11px;
+    color: var(--text-faint);
+    margin-top: 3px;
+  }
+
+  /* ---------- notes ---------- */
+
+  .notes-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-top: 8px;
+  }
+
+  .notes-card h2 {
+    font-size: 16px;
+    margin: 0 0 12px;
+  }
+
+  .notes-card ol {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .notes-card li::marker {
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  .notes-card b { color: var(--text); }
+
+  .readonly-banner {
+    background: var(--u-3-bg);
+    color: var(--u-3);
+    border: 1px solid var(--u-3);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    .phase-head { align-items: flex-start; }
+    .overall-card { padding: 14px; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<div class="wrap">
+  <div class="eyebrow">SEATO · Tim Founder</div>
+  <h1>Decision Backlog</h1>
+  <p class="sub">Siapa mengerjakan apa, dan seberapa urgent. Centang kalau sudah selesai, dan tulis keputusan/jawabannya di kolom bawah tiap case — tersinkron untuk semua yang buka halaman ini.</p>
+
+  <div id="readonlyBanner" class="readonly-banner">Mode lihat-saja untuk kamu di halaman ini — centang tidak bisa disimpan. Minta akses "Contributor" ke pemilik artifact kalau perlu mencentang.</div>
+
+  <div class="overall-card">
+    <div class="overall-num mono" id="overallNum">0%</div>
+    <div class="overall-bar-col">
+      <div class="overall-label" id="overallLabel">0 / 0 case selesai</div>
+      <div class="bar-track"><div class="bar-fill" id="overallBar" style="width:0%"></div></div>
+    </div>
+    <div class="sync-note"><span class="dot" id="syncDot"></span><span id="syncText">Menghubungkan ke penyimpanan bersama…</span></div>
+  </div>
+
+  <div class="filter-row" id="filterRow"></div>
+
+  <div id="phases"></div>
+
+  <div class="notes-card">
+    <h2>Catatan Kritis</h2>
+    <ol id="notesList"></ol>
+  </div>
+</div>
+
+<script>
+(function () {
+  var PIC_COLOR = {
+    "Giffard": "var(--pic-giffard)",
+    "Arif": "var(--pic-arif)",
+    "Bagus": "var(--pic-bagus)",
+    "Dzikri": "var(--pic-dzikri)",
+    "Dandy": "var(--pic-dandy)"
+  };
+
+  var URGENCY = {
+    4: { label: "Tertinggi", c: "var(--u-4)", bg: "var(--u-4-bg)" },
+    3: { label: "Tinggi", c: "var(--u-3)", bg: "var(--u-3-bg)" },
+    2: { label: "Sedang", c: "var(--u-2)", bg: "var(--u-2-bg)" },
+    1: { label: "Rendah", c: "var(--u-1)", bg: "var(--u-1-bg)" }
+  };
+
+  var PHASES = [
+    {
+      id: "fase1",
+      title: "Fase 1 — Jalan Sekarang",
+      sub: "Minggu ini, blocking semua hal lain",
+      tasks: [
+        { id: "t1", case: "Riset dukungan hold/delayed-split Midtrans vs Xendit (sumber resmi)", ref: "Problem4 §4", pic: "Bagus", supported: [], level: 4, urgencyNote: "Semua coding payment gateway menunggu ini", dep: "Tidak ada — titik awal rantai" },
+        { id: "t2", case: "Hitung risiko finansial tiap opsi A/B/C (clawback, saldo jaminan kalau Opsi B)", ref: "Problem4 §4", pic: "Arif", supported: [], level: 4, urgencyNote: "Paralel dengan #1", dep: "Butuh hasil riset #1 dulu baru bisa dihitung presisi" },
+        { id: "t3", case: "Riset lapangan % target merchant Jakarta+Bandung yang ber-NIB/legalitas memadai", ref: "PROBLEM_YANG_BELUM_TERSELESAIKAN.md §2", pic: "Dandy", supported: [], level: 3, urgencyNote: "Menentukan ukuran TAM riil, dipakai Arif di model fundraising", dep: "Tidak ada, bisa jalan paralel dengan #1-2" },
+        { id: "t4", case: "Hitung ulang market size presisi Jakarta+Bandung (Google Places API, bukan asumsi \"63.000\")", ref: "problem2 §G", pic: "Dandy", supported: [], level: 3, urgencyNote: "Sama dependency-nya dengan #3 (sama-sama input TAM)", dep: "Tidak ada" },
+        { id: "t5", case: "Rekonsiliasi data pre-launch cost (Funding Rp159,7jt vs Cost Structure Rp152,7jt)", ref: "Finance §7", pic: "Arif", supported: [], level: 2, urgencyNote: "Data hygiene, tidak blocking siapa pun tapi harus kelar sebelum angka dipakai pitching", dep: "Tidak ada" },
+        { id: "t6", case: "Cek double-count Growth Cost (Trial Subsidy) vs biaya masa gratis 2 bulan", ref: "Finance §7", pic: "Arif", supported: [], level: 2, urgencyNote: "Sama alasan dengan #5", dep: "Tidak ada" }
+      ]
+    },
+    {
+      id: "fase2",
+      title: "Fase 2 — Setelah Fase 1 Kelar",
+      sub: "Baru bisa diputuskan",
+      tasks: [
+        { id: "t7", case: "Putuskan lokasi penahanan dana DP (A/B/C)", ref: "Problem4 §4", pic: "Giffard", supported: ["Bagus", "Arif"], level: 4, urgencyNote: "Begitu ini jatuh, Bagus langsung mulai build", dep: "Butuh #1 dan #2 selesai" },
+        { id: "t8", case: "Putuskan strategi Merchant Lite vs Full-DP-only", ref: "PROBLEM_YANG_BELUM_TERSELESAIKAN.md §2", pic: "Giffard", supported: ["Dandy", "Arif", "Bagus"], level: 3, urgencyNote: "", dep: "Butuh #3 selesai" },
+        { id: "t9", case: "Eksekusi implementasi seat-lock + DP + integrasi gateway sungguhan", ref: "Problem1, Problem4", pic: "Bagus", supported: ["Dzikri"], level: 4, urgencyNote: "Satu-satunya blocker value proposition inti Seato", dep: "Butuh #7 diputuskan" },
+        { id: "t10", case: "Putuskan skema fundraise A2 vs B", ref: "Finance §7 item 3", pic: "Arif", supported: ["Bagus"], level: 3, urgencyNote: "", dep: "Idealnya setelah #9 ada estimasi timeline lebih solid" }
+      ]
+    },
+    {
+      id: "fase3",
+      title: "Fase 3 — Pra-Launch",
+      sub: "Tidak blocking Fase 1-2, bisa jalan paralel",
+      tasks: [
+        { id: "t11", case: "Desain mitigasi insentif staff tidak scan QR (DP sengaja dibiarkan hangus)", ref: "Problem4 §3 poin 3", pic: "Bagus", supported: ["Dandy"], level: 3, urgencyNote: "Harus kelar sebelum fitur DP live", dep: "Terkait #9, tapi bisa didesain paralel" },
+        { id: "t12", case: "Kunci definisi final \"repeat customer\"", ref: "problem2 checklist F", pic: "Dandy", supported: ["Arif"], level: 2, urgencyNote: "Sebelum dashboard merchant tampilkan metrik ini", dep: "Tidak ada" },
+        { id: "t13", case: "Tentukan harga subscription Starter/Professional/Enterprise", ref: "Business def §35, Finance §7", pic: "Arif", supported: ["Giffard"], level: 2, urgencyNote: "Bisa menyusul setelah masa gratis 2 bulan pertama, tidak perlu kelar sebelum launch", dep: "Tidak ada" },
+        { id: "t14", case: "Susun rencana moderasi konten Stream (trust & safety)", ref: "problem2 §G — syarat wajib sebelum launch", pic: "Dandy", supported: ["Bagus"], level: 3, urgencyNote: "Disyaratkan eksplisit sebelum launch karena gamifikasi \"keep full\" sudah diputuskan", dep: "Tidak ada, tapi deadline mepet ke tanggal launch" },
+        { id: "t15", case: "Rancang mitigasi XP-farming lanjutan (diminishing returns/cooldown/cap harian/dll)", ref: "PROBLEM_YANG_BELUM_TERSELESAIKAN.md §1", pic: "Dzikri", supported: [], level: 2, urgencyNote: "", dep: "Tidak ada" }
+      ]
+    },
+    {
+      id: "fase4",
+      title: "Fase 4 — Community × Merchant Match",
+      sub: "Masih konsep, belum perlu dikejar",
+      tasks: [
+        { id: "t16", case: "Selesaikan kontradiksi Jalur #02 (subscription tier gate vs pool gratis)", ref: "problem2-community §6", pic: "Arif", supported: ["Giffard"], level: 1, urgencyNote: "Fitur ini sendiri belum masuk scope V1 inti", dep: "Tidak ada" },
+        { id: "t17", case: "Tentukan urutan rollout 4 jalur monetisasi (Sponsored Placement, Subscription Tier Gate, Data Premium, Reservation Commission)", ref: "problem2-community §6", pic: "Arif", supported: ["Giffard"], level: 1, urgencyNote: "", dep: "Idealnya setelah #13 (pricing subscription dasar sudah ada)" },
+        { id: "t18", case: "Tentukan pemilik operasional kurasi manual komunitas & verifikasi merchant", ref: "problem2-community §6", pic: "Dandy", supported: [], level: 1, urgencyNote: "Default, perlu konfirmasi", dep: "Tidak ada" },
+        { id: "t19", case: "Putuskan mekanisme matching: manual ops vs otomatis", ref: "problem2-community §6", pic: "Bagus", supported: ["Dandy"], level: 1, urgencyNote: "", dep: "Butuh #18" }
+      ]
+    },
+    {
+      id: "fase5",
+      title: "Fase 5 — AI Lanjutan",
+      sub: "Weekly report & chatbot — ditunda sampai Fase 1-2 kelar",
+      tasks: [
+        { id: "t20", case: "Pilih sumber data cuaca: BMKG vs OpenWeatherMap", ref: "ai/02 §3", pic: "Dzikri", supported: [], level: 1, urgencyNote: "", dep: "Tidak ada" },
+        { id: "t21", case: "Pilih channel pengiriman weekly report (Email/Telegram/WA Business API)", ref: "ai/02 §3", pic: "Dzikri", supported: ["Dandy"], level: 1, urgencyNote: "Dandy soal biaya operasional kalau WA Business API", dep: "Tidak ada" },
+        { id: "t22", case: "Putuskan jadwal laporan: seragam vs custom per merchant", ref: "ai/02 §3", pic: "Dzikri", supported: ["Dandy"], level: 1, urgencyNote: "", dep: "Tidak ada" },
+        { id: "t23", case: "Kunci threshold \"signifikan\" untuk anomali traffic (%)", ref: "ai/02 §2", pic: "Dzikri", supported: [], level: 2, urgencyNote: "Risiko reputasi kalau salah walau fiturnya sendiri belum urgent", dep: "Tidak ada" },
+        { id: "t24", case: "Tentukan rate limit & isolasi keamanan sandbox untuk chatbot code-exec", ref: "ai/01 §5", pic: "Bagus", supported: ["Arif"], level: 1, urgencyNote: "Arif soal cost-per-request", dep: "Tidak ada" }
+      ]
+    }
+  ];
+
+  var NOTES = [
+    "<b>Rantai dependency fundraising:</b> CEO (fundraising) ← kredibilitas produk (CTO delivery) ← keputusan hold/escrow DP (CTO+CFO+CEO) ← riset Midtrans/Xendit (case #1, belum ada yang mengerjakan). Satu titik macet di rantai ini bisa memacetkan semuanya — perlu deadline eksplisit untuk case #1.",
+    "<b>Gaji sama rata (Rp25jt x5/bulan), beban kerja saat ini sangat tidak merata</b> — Bagus menanggung jalur paling kritis (seat-lock+DP+payment gateway) sendirian, Dzikri direkomendasikan mayoritas bantu Bagus pre-launch. Risiko team-dynamics nyata yang perlu dibicarakan terbuka di tim.",
+    "<b>Legal/compliance follow-through</b> (status PT, validitas convertible note, lisensi payment system/PJP) terpecah antara CFO (definisi kebutuhan)/COO (eksekusi procurement)/CEO (keputusan risiko regulasi) — berisiko jatuh di celah tanpa satu orang yang eksplisit mem-follow-up. Default: COO sebagai PM-nya.",
+    "Case #5, #6, #20-22 sengaja <b>tidak</b> masuk model \"bawa rekomendasi lalu didiskusikan bersama\" — keputusan teknis/data-hygiene yang cukup satu PIC kompeten yang eksekusi. Memaksa semua hal ke meeting bersama memperlambat yang sebenarnya bisa jalan cepat.",
+    "Case yang menyentuh uang perusahaan atau risiko regulasi (#7, #8, #10) tetap PIC \"memimpin diskusi\" bukan \"memutuskan sendiri\" — dampaknya lintas-fungsi, keputusan sepihak berisiko tidak dipegang semua orang nanti."
+  ];
+
+  var ALL_TASKS = [];
+  PHASES.forEach(function (ph) { ph.tasks.forEach(function (t) { t.phaseId = ph.id; ALL_TASKS.push(t); }); });
+
+  var state = { done: {}, answers: {}, names: {}, activeFilter: null, canWrite: null, db: null, myId: null };
+
+  function currentDocBody(id) {
+    var d = state.done[id] || { done: false, doneByUserId: null, doneAt: null };
+    var a = state.answers[id] || { text: "", byUserId: null, at: null };
+    return {
+      done: !!d.done,
+      doneByUserId: d.doneByUserId || null,
+      doneAt: d.doneAt || null,
+      answer: a.text || "",
+      answerByUserId: a.byUserId || null,
+      answerAt: a.at || null
+    };
+  }
+
+  function saveDoc(id, patch) {
+    if (!state.db || state.canWrite === false) return Promise.reject({ code: "no_write" });
+    var body = currentDocBody(id);
+    Object.assign(body, patch);
+    return state.db.doc("tasks/" + id).set(body);
+  }
+
+  function picChip(name) {
+    var color = PIC_COLOR[name] || "var(--text-muted)";
+    return '<span class="pic-chip" style="color:' + color + ';background:color-mix(in srgb, ' + color + ' 14%, transparent)">' +
+      '<span class="dot" style="background:' + color + '"></span>' + name + '</span>';
+  }
+
+  function urgencyPill(level, note) {
+    var u = URGENCY[level];
+    var title = note ? ' title="' + note.replace(/"/g, "&quot;") + '"' : "";
+    return '<span class="urgency-pill" style="color:' + u.c + ';background:' + u.bg + '"' + title + '>' + u.label + '</span>';
+  }
+
+  function fmtDate(iso) {
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString("id-ID", { day: "numeric", month: "short" }) + " " +
+        d.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+    } catch (e) { return ""; }
+  }
+
+  function taskHTML(t) {
+    var done = !!(state.done[t.id] && state.done[t.id].done);
+    var doneInfo = state.done[t.id];
+    var supportedHTML = t.supported.length
+      ? '<span class="supported">+ Didukung: ' + t.supported.join(", ") + '</span>'
+      : "";
+    var depHTML = (t.dep && t.dep.indexOf("Tidak ada") !== 0)
+      ? '<div class="dependency">↳ <b>Dependency:</b> ' + t.dep + '</div>'
+      : (t.dep && t.dep !== "Tidak ada" ? '<div class="dependency">↳ ' + t.dep + '</div>' : "");
+    var num = t.id.replace("t", "#");
+    var doneNote = "";
+    if (done && doneInfo) {
+      var who = doneInfo.doneByUserId && state.names[doneInfo.doneByUserId]
+        ? (state.names[doneInfo.doneByUserId] || "Seseorang")
+        : "";
+      var when = doneInfo.doneAt ? fmtDate(doneInfo.doneAt) : "";
+      if (who || when) {
+        doneNote = '<div class="done-note">Selesai' + (who ? " oleh " + who : "") + (when ? " · " + when : "") + '</div>';
+      }
+    }
+    var disabled = state.canWrite === false ? "disabled" : "";
+    var answerInfo = state.answers[t.id];
+    var answerText = (answerInfo && answerInfo.text) || "";
+    var answerNote = "";
+    if (answerInfo && answerInfo.text) {
+      var aWho = answerInfo.byUserId && state.names[answerInfo.byUserId] ? (state.names[answerInfo.byUserId] || "Seseorang") : "";
+      var aWhen = answerInfo.at ? fmtDate(answerInfo.at) : "";
+      if (aWho || aWhen) {
+        answerNote = '<div class="answer-note">Diisi' + (aWho ? " oleh " + aWho : "") + (aWhen ? " · " + aWhen : "") + '</div>';
+      }
+    }
+    return (
+      '<div class="task ' + (done ? "done" : "") + '" data-id="' + t.id + '" data-pic="' + t.pic + '" data-supported="' + t.supported.join(",") + '">' +
+        '<input type="checkbox" ' + (done ? "checked" : "") + ' ' + disabled + ' aria-label="Tandai selesai: ' + t.case.replace(/"/g, "&quot;") + '">' +
+        '<div class="task-body">' +
+          '<div class="task-num mono">' + num + '</div>' +
+          '<div class="task-case">' + t.case + '</div>' +
+          '<div class="task-meta">' +
+            '<span class="ref">' + t.ref + '</span>' +
+            picChip(t.pic) +
+            supportedHTML +
+            urgencyPill(t.level, t.urgencyNote) +
+            depHTML +
+            doneNote +
+          '</div>' +
+          '<div class="answer-wrap">' +
+            '<label class="answer-label">Jawaban / Keputusan</label>' +
+            '<textarea class="answer-input" data-answer-id="' + t.id + '" ' + disabled + ' placeholder="Tulis keputusan/jawaban final di sini setelah dibahas...">' + answerText.replace(/</g, "&lt;") + '</textarea>' +
+            answerNote +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function phaseProgress(ph) {
+    var total = ph.tasks.length;
+    var done = ph.tasks.filter(function (t) { return state.done[t.id] && state.done[t.id].done; }).length;
+    return { done: done, total: total };
+  }
+
+  function render() {
+    var phasesEl = document.getElementById("phases");
+
+    var active = document.activeElement;
+    var preserve = null;
+    if (active && active.classList && active.classList.contains("answer-input")) {
+      preserve = {
+        id: active.getAttribute("data-answer-id"),
+        value: active.value,
+        selStart: active.selectionStart,
+        selEnd: active.selectionEnd
+      };
+    }
+
+    var html = "";
+    PHASES.forEach(function (ph) {
+      var tasks = ph.tasks.filter(function (t) {
+        if (!state.activeFilter) return true;
+        return t.pic === state.activeFilter || t.supported.indexOf(state.activeFilter) !== -1;
+      });
+      if (!tasks.length) return;
+      var prog = phaseProgress(ph);
+      var pct = prog.total ? Math.round((prog.done / prog.total) * 100) : 0;
+      html += '<div class="phase">' +
+        '<div class="phase-head">' +
+          '<div><div class="phase-title">' + ph.title + '</div><div class="phase-sub">' + ph.sub + '</div></div>' +
+          '<div class="phase-progress"><span>' + prog.done + '/' + prog.total + '</span><div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div></div>' +
+        '</div>' +
+        '<div class="task-list">' + tasks.map(taskHTML).join("") + '</div>' +
+      '</div>';
+    });
+    phasesEl.innerHTML = html;
+
+    if (preserve) {
+      var restored = phasesEl.querySelector('textarea[data-answer-id="' + preserve.id + '"]');
+      if (restored) {
+        restored.value = preserve.value;
+        restored.focus();
+        try { restored.setSelectionRange(preserve.selStart, preserve.selEnd); } catch (e) {}
+      }
+    }
+
+    var totalDone = ALL_TASKS.filter(function (t) { return state.done[t.id] && state.done[t.id].done; }).length;
+    var totalAll = ALL_TASKS.length;
+    var pct = totalAll ? Math.round((totalDone / totalAll) * 100) : 0;
+    document.getElementById("overallNum").textContent = pct + "%";
+    document.getElementById("overallLabel").textContent = totalDone + " / " + totalAll + " case selesai";
+    document.getElementById("overallBar").style.width = pct + "%";
+
+    document.getElementById("readonlyBanner").style.display = state.canWrite === false ? "block" : "none";
+  }
+
+  function renderFilters() {
+    var names = ["Giffard", "Arif", "Bagus", "Dzikri", "Dandy"];
+    var row = document.getElementById("filterRow");
+    var counts = {};
+    names.forEach(function (n) { counts[n] = ALL_TASKS.filter(function (t) { return t.pic === n || t.supported.indexOf(n) !== -1; }).length; });
+
+    var chips = '<span class="chip" data-filter="" aria-pressed="' + (!state.activeFilter) + '">Semua<span class="count">' + ALL_TASKS.length + '</span></span>';
+    names.forEach(function (n) {
+      chips += '<span class="chip" data-filter="' + n + '" aria-pressed="' + (state.activeFilter === n) + '" style="' + (state.activeFilter === n ? "color:" + PIC_COLOR[n] : "") + '">' +
+        '<span class="dot" style="background:' + PIC_COLOR[n] + '"></span>' + n + '<span class="count">' + counts[n] + '</span></span>';
+    });
+    row.innerHTML = chips;
+
+    row.querySelectorAll(".chip").forEach(function (chip) {
+      chip.addEventListener("click", function () {
+        var f = chip.getAttribute("data-filter");
+        state.activeFilter = f || null;
+        try { localStorage.setItem("seato_backlog_filter", state.activeFilter || ""); } catch (e) {}
+        renderFilters();
+        render();
+      });
+    });
+  }
+
+  function renderNotes() {
+    document.getElementById("notesList").innerHTML = NOTES.map(function (n) { return "<li>" + n + "</li>"; }).join("");
+  }
+
+  try {
+    var savedFilter = localStorage.getItem("seato_backlog_filter");
+    if (savedFilter) state.activeFilter = savedFilter;
+  } catch (e) {}
+
+  renderFilters();
+  renderNotes();
+  render();
+
+  async function resolveNames(ids) {
+    if (!ids.length) return;
+    var userCap = await claude.use("user").catch(function () { return null; });
+    if (!userCap) return;
+    var profiles = await userCap.profiles(ids);
+    ids.forEach(function (id) {
+      state.names[id] = (profiles[id] && profiles[id].name) || "";
+    });
+    render();
+  }
+
+  async function init() {
+    var userCap = null;
+    try { userCap = await claude.use("user"); } catch (e) { userCap = null; }
+
+    if (userCap) {
+      state.myId = await userCap.id();
+      var canWrite = await userCap.can("data.write");
+      state.canWrite = canWrite; // true / false / null
+    }
+
+    var db = null;
+    try { db = await claude.use("db"); } catch (e) { db = null; }
+    state.db = db;
+
+    var syncDot = document.getElementById("syncDot");
+    var syncText = document.getElementById("syncText");
+
+    if (!db) {
+      syncDot.classList.remove("live");
+      syncText.textContent = "Tidak terhubung ke penyimpanan bersama di tampilan ini — centang tidak akan tersimpan.";
+      state.canWrite = false;
+      render();
+      return;
+    }
+
+    db.collection("tasks").onSnapshot(function (snap) {
+      var ids = [];
+      snap.docs.forEach(function (doc) {
+        var d = doc.data();
+        if (d) {
+          state.done[doc.id] = { done: !!d.done, doneByUserId: d.doneByUserId || null, doneAt: d.doneAt || null };
+          state.answers[doc.id] = { text: d.answer || "", byUserId: d.answerByUserId || null, at: d.answerAt || null };
+          if (d.doneByUserId) ids.push(d.doneByUserId);
+          if (d.answerByUserId) ids.push(d.answerByUserId);
+        }
+      });
+      syncDot.classList.add("live");
+      syncText.textContent = "Tersinkron — centang terlihat oleh semua yang buka halaman ini.";
+      render();
+      var unresolved = ids.filter(function (id) { return state.names[id] === undefined; });
+      if (unresolved.length) resolveNames(unresolved);
+    }, function (err) {
+      syncDot.classList.remove("live");
+      syncText.textContent = "Koneksi penyimpanan bersama terputus (" + err.code + ").";
+    });
+
+    render();
+  }
+
+  document.getElementById("phases").addEventListener("change", function (e) {
+    var input = e.target;
+    if (input.tagName !== "INPUT" || input.type !== "checkbox") return;
+    var card = input.closest(".task");
+    var id = card.getAttribute("data-id");
+    var newDone = input.checked;
+
+    if (!state.db || state.canWrite === false) {
+      input.checked = !newDone;
+      return;
+    }
+
+    var prevDone = state.done[id];
+    state.done[id] = { done: newDone, doneByUserId: state.myId, doneAt: new Date().toISOString() };
+    render();
+
+    saveDoc(id, { done: newDone, doneByUserId: state.myId, doneAt: new Date().toISOString() }).catch(function (err) {
+      state.done[id] = prevDone || { done: !newDone, doneByUserId: null, doneAt: null };
+      if (err && err.code === "invalid_argument" && state.canWrite === null) {
+        state.canWrite = false;
+      }
+      render();
+    });
+  });
+
+  document.getElementById("phases").addEventListener("focusout", function (e) {
+    var textarea = e.target;
+    if (!textarea.classList || !textarea.classList.contains("answer-input")) return;
+    var id = textarea.getAttribute("data-answer-id");
+    var newText = textarea.value;
+    var prevAnswer = state.answers[id];
+    var prevText = (prevAnswer && prevAnswer.text) || "";
+    if (newText === prevText) return;
+
+    if (!state.db || state.canWrite === false) {
+      textarea.value = prevText;
+      return;
+    }
+
+    state.answers[id] = { text: newText, byUserId: state.myId, at: new Date().toISOString() };
+
+    saveDoc(id, { answer: newText, answerByUserId: state.myId, answerAt: new Date().toISOString() }).catch(function (err) {
+      state.answers[id] = prevAnswer || { text: "", byUserId: null, at: null };
+      if (err && err.code === "invalid_argument" && state.canWrite === null) {
+        state.canWrite = false;
+      }
+      render();
+    });
+  });
+
+  init();
+})();
+</script>

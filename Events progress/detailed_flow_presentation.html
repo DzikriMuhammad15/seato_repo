@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEATO Community Events - Complete End-to-End Architecture Flow</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #0F172A; color: #E2E8F0; padding: 40px 20px; }
+    .container { max-width: 1200px; margin: 0 auto; background: #1E293B; border-radius: 24px; padding: 40px; border: 1px solid #334155; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+    
+    header { text-align: center; margin-bottom: 48px; }
+    .badge { display: inline-block; padding: 6px 14px; border-radius: 20px; background: rgba(16, 185, 129, 0.15); color: #34D399; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; border: 1px solid rgba(16, 185, 129, 0.3); }
+    h1 { font-size: 32px; font-weight: 800; color: #FFFFFF; letter-spacing: -0.5px; }
+    p.subtitle { color: #94A3B8; font-size: 15px; margin-top: 8px; }
+
+    /* Phase Row */
+    .timeline { display: flex; flex-direction: column; gap: 32px; position: relative; }
+    .timeline::before { content: ''; position: absolute; left: 39px; top: 30px; bottom: 30px; width: 2px; background: #334155; }
+
+    .step-card { display: flex; gap: 24px; position: relative; }
+    .step-number { width: 80px; height: 80px; border-radius: 20px; background: #0F172A; border: 2px solid #38BDF8; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; z-index: 2; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); }
+    .step-number span.num { font-size: 24px; font-weight: 800; color: #38BDF8; }
+    .step-number span.tag { font-size: 9px; font-weight: 700; color: #94A3B8; text-transform: uppercase; }
+
+    .step-content { flex: 1; background: #0F172A; border: 1px solid #334155; border-radius: 20px; padding: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    
+    .phase-info h3 { font-size: 18px; font-weight: 700; color: #F8FAFC; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .phase-info p { font-size: 13px; color: #94A3B8; line-height: 1.6; }
+    .actors { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .actor-tag { font-size: 11px; padding: 4px 10px; border-radius: 8px; font-weight: 600; background: #1E293B; border: 1px solid #475569; }
+    .actor-tag.pic { color: #38BDF8; border-color: rgba(56, 189, 248, 0.4); }
+    .actor-tag.admin { color: #F59E0B; border-color: rgba(245, 158, 11, 0.4); }
+    .actor-tag.merchant { color: #10B981; border-color: rgba(16, 185, 129, 0.4); }
+    .actor-tag.member { color: #C084FC; border-color: rgba(192, 132, 252, 0.4); }
+    .actor-tag.cron { color: #F43F5E; border-color: rgba(244, 63, 94, 0.4); }
+
+    .step-details { background: #1E293B; border-radius: 14px; padding: 16px; border: 1px solid #334155; }
+    .detail-item { font-size: 13px; margin-bottom: 10px; display: flex; align-items: flex-start; gap: 8px; }
+    .detail-item:last-child { margin-bottom: 0; }
+    .detail-item strong { color: #F1F5F9; min-width: 90px; }
+    .detail-item span { color: #CBD5E1; }
+
+    /* Highlights */
+    .status-badge { display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 6px; }
+    .status-badge.verified { background: rgba(16, 185, 129, 0.2); color: #34D399; }
+    .status-badge.pending { background: rgba(245, 158, 11, 0.2); color: #FBBF24; }
+    .status-badge.live { background: rgba(239, 68, 68, 0.2); color: #F87171; }
+    .status-badge.completed { background: rgba(148, 163, 184, 0.2); color: #94A3B8; }
+
+    /* Summary Matrix */
+    .matrix { margin-top: 48px; background: #0F172A; border-radius: 20px; padding: 28px; border: 1px solid #334155; }
+    .matrix h2 { font-size: 20px; font-weight: 800; color: #FFFFFF; margin-bottom: 16px; text-align: center; }
+    .matrix-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .matrix-card { background: #1E293B; padding: 20px; border-radius: 16px; border: 1px solid #334155; }
+    .matrix-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .matrix-card ul { list-style: none; font-size: 12px; color: #94A3B8; line-height: 1.8; }
+    .matrix-card ul li::before { content: '✓ '; color: #10B981; font-weight: 800; }
+
+    @media (max-width: 860px) {
+      .step-content { grid-template-columns: 1fr; }
+      .matrix-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Architecture & Operational Blueprint</div>
+      <h1>SEATO Community Events: End-to-End Workflow</h1>
+      <p class="subtitle">Panduan lengkap interaksi 3 aplikasi: Customer App, Merchant Business Portal, & Seato Admin Ops</p>
+    </header>
+
+    <div class="timeline">
+      
+      <!-- Phase 1 -->
+      <div class="step-card">
+        <div class="step-number" style="border-color: #F59E0B; box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);">
+          <span class="num" style="color: #F59E0B;">01</span>
+          <span class="tag">Kurasi</span>
+        </div>
+        <div class="step-content">
+          <div class="phase-info">
+            <h3>🛡️ Registrasi & Kurasi Komunitas</h3>
+            <p>PIC komunitas mendaftarkan profil komunitasnya di Customer App. Komunitas tidak langsung aktif melainkan masuk antrean verifikasi untuk mencegah booking fiktif.</p>
+            <div class="actors">
+              <span class="actor-tag pic">👤 PIC Komunitas</span>
+              <span class="actor-tag admin">👔 Seato Ops Admin</span>
+            </div>
+          </div>
+          <div class="step-details">
+            <div class="detail-item"><strong>Aksi PIC:</strong> <span>Buka tab Komunitas &rarr; Klik "Daftar Komunitas" &rarr; Isi profil & PIC</span></div>
+            <div class="detail-item"><strong>Status:</strong> <span class="status-badge pending">PENDING_REVIEW</span></div>
+            <div class="detail-item"><strong>Aksi Ops:</strong> <span>Review di Seato Admin portal &rarr; Klik "Verify" atau "Tolak"</span></div>
+            <div class="detail-item"><strong>Hasil:</strong> <span>Jika disetujui &rarr; <span class="status-badge verified">VERIFIED</span> & tombol ajukan event aktif</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 2 -->
+      <div class="step-card">
+        <div class="step-number" style="border-color: #38BDF8; box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);">
+          <span class="num" style="color: #38BDF8;">02</span>
+          <span class="tag">Ajuan</span>
+        </div>
+        <div class="step-content">
+          <div class="phase-info">
+            <h3>📝 Pengajuan Event ke Venue Mitra</h3>
+            <p>Hanya PIC terverifikasi yang dapat mengajukan meeting point. Sistem memproteksi merchant dengan lead-time terstruktur dan request chips terstandar.</p>
+            <div class="actors">
+              <span class="actor-tag pic">👤 PIC Komunitas</span>
+              <span class="actor-tag">⚙️ System Engine</span>
+            </div>
+          </div>
+          <div class="step-details">
+            <div class="detail-item"><strong>Lead Time:</strong> <span>Santai min <strong>H-3</strong> | Terstruktur min <strong>H-7</strong> (Datepicker dikunci otomatis)</span></div>
+            <div class="detail-item"><strong>Chips:</strong> <span>Diskon Grup, Free Refreshment, Meja Khusus, Izin Banner</span></div>
+            <div class="detail-item"><strong>Kuota:</strong> <span>Target kapasitas ditentukan PIC (default 25 orang)</span></div>
+            <div class="detail-item"><strong>Status:</strong> <span class="status-badge pending">PENDING</span> <span>(PIC otomatis ter-RSVP pertama)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 3 -->
+      <div class="step-card">
+        <div class="step-number" style="border-color: #10B981; box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);">
+          <span class="num" style="color: #10B981;">03</span>
+          <span class="tag">Review</span>
+        </div>
+        <div class="step-content">
+          <div class="phase-info">
+            <h3>🏪 Merchant Review & Balasan 1x</h3>
+            <p>Mitra resto menerima notifikasi di menu "Komunitas & Event". Merchant memiliki kontrol penuh menyetujui atau menolak ajuan dengan respons terukur.</p>
+            <div class="actors">
+              <span class="actor-tag merchant">☕ Mitra Restoran</span>
+              <span class="actor-tag cron">⏰ Cron 48h SLA</span>
+            </div>
+          </div>
+          <div class="step-details">
+            <div class="detail-item"><strong>Review:</strong> <span>Merchant cek tanggal, jam, kuota & fasilitas yang diminta</span></div>
+            <div class="detail-item"><strong>Aksi:</strong> <span>Klik <strong>Setujui</strong> atau <strong>Tolak</strong></span></div>
+            <div class="detail-item"><strong>Balasan 1x:</strong> <span>Ketik pesan singkat (maks. 140 char) misal: <em>"Area outdoor depan siap!"</em></span></div>
+            <div class="detail-item"><strong>Guardrail:</strong> <span>Jika tidak direspons > 48h / H-2 &rarr; Cron auto-expire ke <span class="status-badge completed">EXPIRED</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 4 -->
+      <div class="step-card">
+        <div class="step-number" style="border-color: #C084FC; box-shadow: 0 0 20px rgba(192, 132, 252, 0.2);">
+          <span class="num" style="color: #C084FC;">04</span>
+          <span class="tag">Publik</span>
+        </div>
+        <div class="step-content">
+          <div class="phase-info">
+            <h3>📱 Publikasi & Momentum Bar RSVP</h3>
+            <p>Event yang di-approve langsung tayang di tab "Events". Member dapat memantau keterisian slot secara transparan tanpa kebocoran data pribadi.</p>
+            <div class="actors">
+              <span class="actor-tag member">👥 Member Komunitas</span>
+              <span class="actor-tag">⚙️ Atomic DB Lock</span>
+            </div>
+          </div>
+          <div class="step-details">
+            <div class="detail-item"><strong>Tampilan:</strong> <span>Tab Events &rarr; Kartu Event + Balasan Merchant (bubble hijau)</span></div>
+            <div class="detail-item"><strong>Momentum Bar:</strong> <span>Progress bar real-time (contoh: <code>18/25 Slot</code>) + alert <em>"🔥 Sisa 7 slot!"</em></span></div>
+            <div class="detail-item"><strong>Aksi Member:</strong> <span>Klik <strong>"+ Gabung Run & Chill"</strong> (Atomic check)</span></div>
+            <div class="detail-item"><strong>Batal:</strong> <span>Klik <strong>"✓ Terdaftar (Batal Ikut)"</strong> &rarr; kuota kembali terbuka</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Phase 5 -->
+      <div class="step-card">
+        <div class="step-number" style="border-color: #F43F5E; box-shadow: 0 0 20px rgba(244, 63, 94, 0.2);">
+          <span class="num" style="color: #F43F5E;">05</span>
+          <span class="tag">Hari-H</span>
+        </div>
+        <div class="step-content">
+          <div class="phase-info">
+            <h3>🏁 Eksekusi Hari-H & Lifecycle Otomatis</h3>
+            <p>Background worker memantau waktu event tanpa perlu staf resto mengklik tombol mulai atau selesai secara manual.</p>
+            <div class="actors">
+              <span class="actor-tag cron">⏰ Cron Scheduler</span>
+              <span class="actor-tag admin">🛡️ Superadmin Oversight</span>
+            </div>
+          </div>
+          <div class="step-details">
+            <div class="detail-item"><strong>Saat Jam Mulai:</strong> <span>Status otomatis berubah &rarr; <span class="status-badge live">● SEDANG LIVE</span></span></div>
+            <div class="detail-item"><strong>Saat Jam Selesai:</strong> <span>Status otomatis berubah &rarr; <span class="status-badge completed">COMPLETED</span></span></div>
+            <div class="detail-item"><strong>Riwayat:</strong> <span>Tersimpan di tab "Event Disetujui" portal resto</span></div>
+            <div class="detail-item"><strong>Superadmin:</strong> <span>Dapat melakukan <em>Force Cancel</em> / <em>Flag</em> jika terjadi dispute</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Summary Matrix -->
+    <div class="matrix">
+      <h2>Ringkasan Tanggung Jawab Antar Aplikasi</h2>
+      <div class="matrix-grid">
+        <div class="matrix-card">
+          <h4 style="color: #38BDF8;">📱 Customer App</h4>
+          <ul>
+            <li>Daftar komunitas & penunjukan PIC</li>
+            <li>Validasi datepicker H-3 / H-7</li>
+            <li>Feed tab terpisah: "Events"</li>
+            <li>Momentum bar & kuota anti-race</li>
+            <li>Tombol Join / Batal instan</li>
+          </ul>
+        </div>
+        <div class="matrix-card">
+          <h4 style="color: #10B981;">🏪 Seato Business (Merchant)</h4>
+          <ul>
+            <li>Menu baru: Komunitas & Event</li>
+            <li>Tab Ajuan Masuk (Pending)</li>
+            <li>Balasan resmi 1x (maks. 140 karakter)</li>
+            <li>Konfirmasi Setujui / Tolak</li>
+            <li>Tab Event Disetujui & Arsip</li>
+          </ul>
+        </div>
+        <div class="matrix-card">
+          <h4 style="color: #F59E0B;">🛡️ Seato Admin (Ops Portal)</h4>
+          <ul>
+            <li>Kurasi / Verifikasi komunitas baru</li>
+            <li>Pencegahan komunitas spam/fiktif</li>
+            <li>Monitoring seluruh event se-kota</li>
+            <li>Intervensi: Flag curiga & Force Cancel</li>
+            <li>Audit riwayat kepatuhan merchant</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
