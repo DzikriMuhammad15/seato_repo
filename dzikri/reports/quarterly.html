@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Quarterly STP — Kopi Senja</title>
+<link rel="stylesheet" href="_theme.css">
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="brand"><div class="mark">S</div><div class="word">Seato <b>Business</b></div></div>
+  <div class="navitem">Daily Report</div>
+  <div class="navitem">Weekly Report</div>
+  <div class="navitem">Monthly Report</div>
+  <div class="navitem active">Quarterly STP</div>
+  <div class="navitem">Yearly Report</div>
+  <div class="navitem">3-Year Report</div>
+</div>
+
+<div class="main">
+  <h1 class="pagetitle">Quarterly STP — Kopi Senja</h1>
+  <p class="pagesub">Periode Jul–Sep 2026 (90 hari ke belakang) · Segmentation – Targeting – Positioning</p>
+
+  <div class="card">
+    <div class="section-title">Ukuran Sampel</div>
+    <span class="n-badge">&#10003; n = 412 interaksi, 231 reservasi — cukup untuk STP kuartal ini</span>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Traffic vs Reservasi Mingguan Sepanjang Kuartal (Volume Absolut)</div>
+    <p class="chartnote" style="margin:0 0 10px;">Sumbu kiri = <b>Traffic</b> (jumlah baris <code>MerchantVisitorLog</code>/minggu, semua jenis interaksi). Sumbu kanan = <b>Reservasi</b> (jumlah <code>Reservation</code> dibuat/minggu). Dua skala berbeda karena volumenya jauh beda — jangan dibaca sebagai 1 skala sama.</p>
+    <div class="chart-box">
+      <svg viewBox="0 0 580 130" xmlns="http://www.w3.org/2000/svg">
+        <line x1="44" y1="8" x2="44" y2="100" stroke="#CBD5E1"/><line x1="44" y1="100" x2="536" y2="100" stroke="#CBD5E1"/>
+        <line x1="536" y1="8" x2="536" y2="100" stroke="#CBD5E1"/>
+        <text x="4" y="16" font-size="7" fill="#64748B">420</text><text x="4" y="58" font-size="7" fill="#64748B">210</text><text x="4" y="104" font-size="7" fill="#64748B">0</text>
+        <text x="542" y="16" font-size="7" fill="#64748B">26</text><text x="542" y="58" font-size="7" fill="#64748B">13</text><text x="542" y="104" font-size="7" fill="#64748B">0</text>
+        <text x="-6" y="48" font-size="7" fill="#93C5FD" transform="rotate(-90 10,48)">Traffic/minggu</text>
+        <text x="546" y="48" font-size="7" fill="#0EA5A0">Reservasi/minggu</text>
+        <polyline fill="none" stroke="#93C5FD" stroke-width="2.5" points="44,80 85,76 126,72 167,70 208,64 249,60 290,55 331,50 372,45 413,38 454,32 495,26 530,20"/>
+        <polyline fill="none" stroke="#0EA5A0" stroke-width="2.5" points="44,88 85,86 126,84 167,80 208,76 249,70 290,65 331,60 372,54 413,47 454,40 495,33 530,26"/>
+        <text x="38" y="114" font-size="7.5" fill="#64748B">W1</text><text x="160" y="114" font-size="7.5" fill="#64748B">W5</text>
+        <text x="286" y="114" font-size="7.5" fill="#64748B">W9</text><text x="500" y="114" font-size="7.5" fill="#64748B">W13</text>
+      </svg>
+      <p class="chartnote"><span style="color:#93C5FD;">&#9632;</span> Traffic (skala kiri, 0-420/minggu) &nbsp; <span style="color:#0EA5A0;">&#9632;</span> Reservasi (skala kanan, 0-26/minggu) — reservasi naik mengikuti traffic, conversion rate relatif konsisten di ~6% sepanjang kuartal.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Tren Share per Segmen, Mingguan Sepanjang Kuartal</div>
+    <p class="chartnote" style="margin:0 0 10px;">Ketiga segmen <b>diukur dari basis berbeda</b> — bukan 1 skala yang sama: WFC-Seeker dari traffic, dua segmen lain dari reservasi. Lihat denominator di label tiap garis.</p>
+    <div class="chart-box">
+      <svg viewBox="0 0 560 130" xmlns="http://www.w3.org/2000/svg">
+        <line x1="30" y1="8" x2="30" y2="100" stroke="#CBD5E1"/><line x1="30" y1="100" x2="540" y2="100" stroke="#CBD5E1"/>
+        <text x="4" y="12" font-size="7" fill="#94A3B8">45%</text>
+        <text x="8" y="56" font-size="7" fill="#94A3B8">22.5%</text>
+        <text x="12" y="100" font-size="7" fill="#94A3B8">0%</text>
+        <line x1="26" y1="54" x2="540" y2="54" stroke="#F1F5F9"/>
+        <polyline fill="none" stroke="#0EA5A0" stroke-width="2.5" points="30,82 72,78 114,74 156,72 198,66 240,62 282,57 324,52 366,47 408,40 450,34 492,28 530,22"/>
+        <polyline fill="none" stroke="#FACC15" stroke-width="2.5" points="30,56 72,55 114,57 156,54 198,58 240,55 282,56 324,53 366,57 408,54 450,55 492,52 530,55"/>
+        <polyline fill="none" stroke="#4F46E5" stroke-width="2.5" stroke-dasharray="5,3" points="30,68 72,66 114,69 156,65 198,67 240,64 282,66 324,63 366,65 408,62 450,64 492,61 530,63"/>
+        <text x="24" y="114" font-size="7.5" fill="#64748B">W1</text><text x="150" y="114" font-size="7.5" fill="#64748B">W5</text>
+        <text x="276" y="114" font-size="7.5" fill="#64748B">W9</text><text x="490" y="114" font-size="7.5" fill="#64748B">W13</text>
+      </svg>
+      <p class="chartnote">
+        <span style="color:#0EA5A0;">&#9632;</span> WFC-Seeker — % dari <b>total traffic</b> minggu itu: 28%&rarr;39% (naik konsisten) &nbsp;
+        <span style="color:#FACC15;">&#9632;</span> Grup Sosial Weekend — % dari <b>total reservasi</b> minggu itu: ~29-32% (stabil) &nbsp;
+        <span style="color:#4F46E5;">&#9632;</span> Promo-Sensitive — % dari <b>total reservasi</b> minggu itu: ~32-34% (relatif stabil)<br/>
+        WFC-Seeker dipilih jadi prioritas Targeting karena satu-satunya yang <b>tumbuh konsisten</b> sepanjang kuartal, bukan sekadar yang paling besar di satu titik waktu.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Segmentation (behavioral, bukan demografis)</div>
+    <div class="grid3">
+      <div class="seg-card">
+        <div class="tag">By Kebutuhan</div>
+        <div class="title">WFC-Seeker</div>
+        <div class="desc">39% interaksi dari kata kunci WFC Friendly &amp; Colokan Banyak.</div>
+      </div>
+      <div class="seg-card">
+        <div class="tag">By Occasion</div>
+        <div class="title">Grup Sosial Weekend</div>
+        <div class="desc">Reservasi &ge;4 tamu, mayoritas Jumat–Sabtu malam.</div>
+      </div>
+      <div class="seg-card">
+        <div class="tag">By Promo</div>
+        <div class="title">Promo-Sensitive</div>
+        <div class="desc">34% reservasi memakai kode promo, terutama weekday.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="section-title">Targeting — Gap Kapasitas per Segmen</div>
+      <div class="finding">
+        <div class="chip-dot warn">GAP TINGGI</div>
+        <div><b>WFC-Seeker, weekday 13:00–16:00</b><p>Demand kata kunci tinggi, tapi okupansi area indoor hanya 32% pada jam ini.</p></div>
+      </div>
+      <div class="finding">
+        <div class="chip-dot good">SUDAH OPTIMAL</div>
+        <div><b>Grup Sosial Weekend</b><p>Okupansi outdoor 85-95% Jumat-Sabtu malam — tidak perlu intervensi tambahan.</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Positioning Statement</div>
+      <p style="font-size:13px; color:#334155; line-height:1.7;">
+        "Kopi Senja sebagai <b>tempat kerja weekday terbaik</b> — rating 4.7 khusus ulasan bertag WFC, fasilitas colokan &amp; WiFi paling sering disebut dibanding kategori lain di resto ini sendiri."
+      </p>
+      <p class="chartnote">Berbasis kekuatan resto sendiri (rating &amp; keyword dominan) — bukan perbandingan vs kompetitor, karena data scraping kompetitor (ScrapedMarketData) masih stub.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Rekomendasi Aksi (Targeting: WFC-Seeker Weekday)</div>
+    <div class="action"><div><b>Promo "Weekday WFC Pass" 13:00-16:00</b><p>Menutup gap kapasitas pada jam demand tinggi tapi okupansi rendah.</p></div><span class="tag-channel">Seato Promotion</span></div>
+    <div class="action"><div><b>Konten highlight fasilitas kerja</b><p>Menguatkan positioning "tempat kerja weekday terbaik".</p></div><span class="tag-channel">Social Media</span></div>
+  </div>
+
+</div>
+</body>
+</html>
